@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { canAccess, getContentBySlug } from "@/lib/content";
+import AccessBadge from "@/components/AccessBadge";
+import UpgradeButton from "@/components/UpgradeButton";
+import { getAccessStatus, getUpgradeCTA } from "@/lib/paywall";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -22,15 +25,26 @@ export default async function ContentDetailPage({ params }: Props) {
   }
 
   const user = await getCurrentUser();
-  const userPlan = user?.plan ?? "starter";
+  const userPlan = user?.plan ?? "free";
   const allowed = canAccess(item.requiredPlan, userPlan);
+  const accessStatus = getAccessStatus(
+    item.requiredPlan === "free" ? 0 : item.requiredPlan === "basic" ? 1 : 2,
+    userPlan
+  );
+  const upgradeCTA = getUpgradeCTA(
+    item.requiredPlan === "free" ? 0 : item.requiredPlan === "basic" ? 1 : 2,
+    userPlan
+  );
 
   return (
     <div className="space-y-10">
       <header className="space-y-2">
-        <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-500">
-          {item.type.toUpperCase()} • {item.requiredPlan.toUpperCase()}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-500">
+            {item.type.toUpperCase()} • {item.requiredPlan.toUpperCase()}
+          </p>
+          <AccessBadge status={accessStatus} size="sm" />
+        </div>
         <h1 className="text-3xl font-semibold tracking-tight">{item.title}</h1>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">{item.summary}</p>
       </header>
@@ -42,12 +56,7 @@ export default async function ContentDetailPage({ params }: Props) {
             Upgrade to Pro to access this lesson. Your current plan: {userPlan}.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/pricing"
-              className="rounded-full bg-zinc-900 px-4 py-2 text-center text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-black dark:hover:bg-zinc-200"
-            >
-              View pricing
-            </Link>
+            <UpgradeButton href={upgradeCTA.href} label={upgradeCTA.label} />
             <Link
               href="/content"
               className="rounded-full border border-zinc-200 px-4 py-2 text-center text-sm font-medium text-zinc-900 hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-50 dark:hover:bg-zinc-950"

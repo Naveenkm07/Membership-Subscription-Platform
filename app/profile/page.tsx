@@ -19,7 +19,7 @@ export default async function ProfilePage() {
           </div>
           <div className="flex items-center justify-between gap-4">
             <dt className="text-zinc-600 dark:text-zinc-400">Plan</dt>
-            <dd className="font-medium">{user?.plan ?? "starter"}</dd>
+            <dd className="font-medium">{user?.plan ?? "free"}</dd>
           </div>
         </dl>
       </section>

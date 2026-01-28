@@ -1,6 +1,14 @@
+import { createMetadata } from "../metadata";
+
 type Props = {
   searchParams?: Record<string, string | string[] | undefined>;
 };
+
+export const metadata = createMetadata(
+  "Log in",
+  "Sign in to your account to access your member dashboard and content.",
+  "/login"
+);
 
 export default function LoginPage({ searchParams }: Props) {
   const next = typeof searchParams?.next === "string" ? searchParams.next : "/dashboard";

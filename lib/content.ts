@@ -1,3 +1,5 @@
+import { canAccessContent } from "./plans";
+
 export type RequiredPlan = "free" | "basic" | "pro";
 
 export type Lesson = {
@@ -14,6 +16,7 @@ export type Course = {
   slug: string;
   title: string;
   description: string;
+  summary: string; // Add summary to Course type
   requiredPlan: RequiredPlan;
   lessons: Lesson[];
   progress: number;
@@ -37,6 +40,7 @@ export const COURSES: Course[] = [
     slug: "getting-started",
     title: "Getting Started: Your Member Dashboard",
     description: "Learn how to navigate your dashboard, track progress, and save resources.",
+    summary: "Learn how to navigate your dashboard, track progress, and save resources.",
     requiredPlan: "free",
     lessons: [
       { id: "1", title: "Tour the dashboard", description: "Overview of key sections", duration: "3m" },
@@ -49,6 +53,7 @@ export const COURSES: Course[] = [
     slug: "content-systems",
     title: "Content Systems 101",
     description: "A practical framework for publishing consistent, high-quality member content.",
+    summary: "A practical framework for publishing consistent, high-quality member content.",
     requiredPlan: "basic",
     lessons: [
       { id: "1", title: "Why systems matter", description: "Consistency beats intensity", duration: "5m" },
@@ -62,6 +67,7 @@ export const COURSES: Course[] = [
     slug: "pro-growth-playbook",
     title: "Pro: Growth Playbook",
     description: "Advanced acquisition loops, retention tactics, and member segmentation strategies.",
+    summary: "Advanced acquisition loops, retention tactics, and member segmentation strategies.",
     requiredPlan: "pro",
     lessons: [
       { id: "1", title: "Acquisition loops", description: "Self-sustaining growth", duration: "8m" },
@@ -112,4 +118,11 @@ export function getCourseBySlug(slug: string): Course | null {
 
 export function getArticleBySlug(slug: string): Article | null {
   return ARTICLES.find((a) => a.slug === slug) ?? null;
+}
+
+export function canAccess(requiredPlan: RequiredPlan, userPlan: string): boolean {
+  const planLevels: Record<string, number> = { free: 0, basic: 1, pro: 2 };
+  const requiredLevel = planLevels[requiredPlan] ?? 0;
+  const userLevel = planLevels[userPlan] ?? 0;
+  return userLevel >= requiredLevel;
 }

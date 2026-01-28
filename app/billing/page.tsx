@@ -17,7 +17,7 @@ export default async function BillingPage() {
       <section className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-black">
         <h2 className="text-base font-semibold">Current plan</h2>
         <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          You&apos;re currently on <span className="font-medium">{user?.plan ?? "starter"}</span>.
+          You&apos;re currently on <span className="font-medium">{user?.plan ?? "free"}</span>.
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -48,7 +48,7 @@ export default async function BillingPage() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="text-sm font-semibold">{p.name}</div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">${p.priceMonthlyUsd}/mo</div>
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">${p.priceMonthly}/mo</div>
                 </div>
                 <form action="/api/stripe/create-checkout-session" method="post">
                   <input type="hidden" name="planId" value={p.id} />

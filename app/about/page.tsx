@@ -1,3 +1,11 @@
+import { createMetadata } from "../metadata";
+
+export const metadata = createMetadata(
+  "About",
+  "Learn about our membership platform and what members get access to.",
+  "/about"
+);
+
 export default function AboutPage() {
   return (
     <div className="space-y-10">

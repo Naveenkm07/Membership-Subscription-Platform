@@ -1,3 +1,11 @@
+import { createMetadata } from "../metadata";
+
+export const metadata = createMetadata(
+  "Features",
+  "Everything you need to run a members-only product: gated content, dashboards, and subscription-ready billing.",
+  "/features"
+);
+
 export default function FeaturesPage() {
   return (
     <div className="space-y-10">

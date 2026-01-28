@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { canAccess, CONTENT } from "@/lib/content";
+import AccessBadge from "@/components/AccessBadge";
+import UpgradeButton from "@/components/UpgradeButton";
+import { getAccessStatus, getUpgradeCTA } from "@/lib/paywall";
 
 export default async function ContentLibraryPage() {
   const user = await getCurrentUser();
-  const userPlan = user?.plan ?? "starter";
+  const userPlan = user?.plan ?? "free";
 
   return (
     <div className="space-y-10">
@@ -18,6 +21,14 @@ export default async function ContentLibraryPage() {
       <section className="grid gap-4 md:grid-cols-2">
         {CONTENT.map((item) => {
           const allowed = canAccess(item.requiredPlan, userPlan);
+          const accessStatus = getAccessStatus(
+            item.requiredPlan === "free" ? 0 : item.requiredPlan === "basic" ? 1 : 2,
+            userPlan
+          );
+          const upgradeCTA = getUpgradeCTA(
+            item.requiredPlan === "free" ? 0 : item.requiredPlan === "basic" ? 1 : 2,
+            userPlan
+          );
 
           return (
             <div
@@ -32,11 +43,7 @@ export default async function ContentLibraryPage() {
                   <h2 className="text-base font-semibold">{item.title}</h2>
                   <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">{item.summary}</p>
                 </div>
-                {!allowed ? (
-                  <span className="shrink-0 rounded-full border border-zinc-200 px-3 py-1 text-xs text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-                    Locked
-                  </span>
-                ) : null}
+                <AccessBadge status={accessStatus} size="sm" />
               </div>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -48,12 +55,7 @@ export default async function ContentLibraryPage() {
                     Open
                   </Link>
                 ) : (
-                  <Link
-                    href="/pricing"
-                    className="rounded-full bg-zinc-900 px-4 py-2 text-center text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-black dark:hover:bg-zinc-200"
-                  >
-                    Upgrade to unlock
-                  </Link>
+                  <UpgradeButton href={upgradeCTA.href} label={upgradeCTA.label} />
                 )}
 
                 <Link

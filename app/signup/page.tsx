@@ -1,6 +1,14 @@
+import { createMetadata } from "../metadata";
+
 type Props = {
   searchParams?: Record<string, string | string[] | undefined>;
 };
+
+export const metadata = createMetadata(
+  "Create your account",
+  "Sign up for a free account to get started with our membership platform.",
+  "/signup"
+);
 
 export default function SignupPage({ searchParams }: Props) {
   const next = typeof searchParams?.next === "string" ? searchParams.next : "/dashboard";
