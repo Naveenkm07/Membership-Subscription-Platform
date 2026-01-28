@@ -1,0 +1,59 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[functions]
+  directory = "netlify/functions"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "/api/stripe/create-checkout-session"
+  to = "/.netlify/functions/create-subscription"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/dashboard/*"
+  to = "/dashboard/:splat"
+  status = 200
+  conditions = { Cookie = ["mp_auth"] }
+
+[[redirects]]
+  from = "/dashboard/*"
+  to = "/login?next=/dashboard/:splat"
+  status = 302
+
+[[redirects]]
+  from = "/content/*"
+  to = "/content/:splat"
+  status = 200
+  conditions = { Cookie = ["mp_auth"] }
+
+[[redirects]]
+  from = "/content/*"
+  to = "/login?next=/content/:splat"
+  status = 302
+
+[[redirects]]
+  from = "/profile/*"
+  to = "/profile/:splat"
+  status = 200
+  conditions = { Cookie = ["mp_auth"] }
+
+[[redirects]]
+  from = "/profile/*"
+  to = "/login?next=/profile/:splat"
+  status = 302
+
+[[redirects]]
+  from = "/billing/*"
+  to = "/billing/:splat"
+  status = 200
+  conditions = { Cookie = ["mp_auth"] }
+
+[[redirects]]
+  from = "/billing/*"
+  to = "/login?next=/billing/:splat"
+  status = 302
